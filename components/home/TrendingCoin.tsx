@@ -6,12 +6,33 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 import DataTable from '../DataTable';
 import { cn } from '@/lib/utils';
 
-const TrendingCoin = async () => {
-  const trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
-    '/search/trending',
-    undefined,
-    300
+const TrendingCoinError = () => {
+  return (
+    <div id="trending-coins">
+      <h4>Trending Coins</h4>
+      <div className="p-4 text-center">
+        <p className="text-red-500">Failed to load trending coins</p>
+        <p className="text-sm text-muted-foreground">
+          Please try again later
+        </p>
+      </div>
+    </div>
   );
+};
+
+const TrendingCoin = async () => {
+  let trendingCoins: { coins: TrendingCoin[] };
+
+  try {
+    trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
+      '/search/trending',
+      undefined,
+      300
+    );
+  } catch (error) {
+    console.error('Failed to fetch trending coins:', error);
+    return <TrendingCoinError />;
+  }
 
   const columns: DataTableColumn<TrendingCoin>[] = [
     {
