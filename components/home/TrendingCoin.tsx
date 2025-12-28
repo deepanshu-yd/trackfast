@@ -43,7 +43,7 @@ const TrendingCoin = async () => {
 
         return (
           <Link href={`/coins/${item.id}`}>
-            <Image src={item.large} alt={item.name} width={36} height={36} />
+            <Image src={item.large} alt={item.name || 'Coin image'} width={36} height={36} />
             <p>{item.name}</p>
           </Link>
         );
