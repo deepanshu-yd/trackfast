@@ -1,0 +1,20 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Cache
+.cache
+
+# Package manager
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Auto-generated
+*.d.ts
+!type.d.ts
