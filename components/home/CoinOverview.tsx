@@ -22,13 +22,13 @@ const CoinOverviewError = () => {
 const CoinOverview = async () => {
   try {
     const [coin, coinOHLCData] = await Promise.all([
-      fetcher<CoinDetailsData>('/coins/bitcoin', {
+      await fetcher<CoinDetailsData>('/coins/bitcoin', {
         dex_pair_format: 'symbol',
       }),
-      fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
+      await fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
         vs_currency: 'usd',
         days: 1,
-        interval: 'hourly',
+        // interval: 'hourly', -----------------------------
         precision: 'full',
       }),
     ]);

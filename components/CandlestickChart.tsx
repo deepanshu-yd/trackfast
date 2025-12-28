@@ -1,7 +1,7 @@
 'use client';
-import { PERIOD_BUTTONS } from "@/constants";
-import React, { useRef } from "react";
-import { useState } from "react";
+import { getChartConfig, PERIOD_BUTTONS, PERIOD_CONFIG } from "@/constants";
+import { createChart, IChartApi, ISeriesApi } from "lightweight-charts";
+import { useState, useRef, useTransition, useEffect } from "react";
 
 const CandlestickChart = ({
   children,
@@ -10,15 +10,52 @@ const CandlestickChart = ({
   height = 360,
   initialPeriod = 'daily',
 }: CandlestickChartProps) => {
-    const chartContainerRef = useRef<HTMLDivElement>()
+    const chartContainerRef = useRef<HTMLDivElement | null>(null);
+    const chartRef = useRef<IChartApi | null>(null);
+    const candleSeriesRef = useRef<ISeriesApi<"CandleStick"> | null>(null);
+
     const [loading, setLoading] = useState(false);
-    const [period, setPeriod] = useState(initialPeriod)
+    const [period, setPeriod] = useState(initialPeriod);
+    const [ohlcData, setohlcData] = useState<OHLCData[]>(data ?? []);
+    const [isPending, startTransition] = useTransition();
+
+    const fetchOHLCData = async (selectedPeriod: Period) => {
+      try {
+        const { days, interval } = PERIOD_CONFIG[selectedPeriod];
+
+        const newData = await fetcher<OHLCData[]>(`/coins/${coinId}/ohlc`, {
+                vs_currency: 'usd',
+                days,
+                interval,
+                precision: 'full',
+              });
+
+        setohlcData(newData ?? []);
+      } catch (e) {
+        console.error('failed to fetch OHLCData', e);
+      }
+    }
 
     const handlePeriodChange = (newPeriod: string) => {
         if(newPeriod === period) return;
-        // Update Period
-        setPeriod(newPeriod);
-    }
+
+        startTransition(async () => {
+          setPeriod(newPeriod);
+          await fetchOHLCData(newPeriod);
+        });
+    };
+
+    useEffect(() => {
+      const container = chartContainerRef.current;
+      if(!container) return;
+
+      const showTime = ['daily', 'weekly', 'monthly'].includes(period);
+
+      const chart = createChart(container, {
+        ...getChartConfig(height, showTime),
+        width: container.clientWidth,
+      })
+    }, [height]);
 
   return (
     <div id="candlestick-chart">
@@ -34,6 +71,7 @@ const CandlestickChart = ({
             ))}
         </div>
       </div>
+
       <div ref={chartContainerRef} className="chart" style={{ height }}/>
     </div>
   );
