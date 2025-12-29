@@ -51,6 +51,10 @@ export function trendingClasses(value: number) {
 export function timeAgo(date: string | number | Date): string {
   const now = new Date();
   const past = new Date(date);
+
+  if (isNaN(past.getTime())) {
+    return 'Unknown';
+  }
   const diff = now.getTime() - past.getTime(); // difference in ms
 
   const seconds = Math.floor(diff / 1000);
@@ -72,7 +76,7 @@ export function timeAgo(date: string | number | Date): string {
 export function convertOHLCData(data: OHLCData[]) {
   return data
     .map((d) => ({
-      time: d[0] as Time, // ensure seconds, not ms
+       time: Math.floor(d[0] / 1000) as Time, // convert ms to seconds
       open: d[1],
       high: d[2],
       low: d[3],

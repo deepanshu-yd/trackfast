@@ -1,3 +1,5 @@
+export type Period = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | 'yearly' | 'max';
+
 import {
   CandlestickSeriesPartialOptions,
   ChartOptions,
@@ -42,7 +44,7 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
 
 export const getChartConfig = (
   height: number,
-  timeVisible: boolean = true,
+  period: Period = 'daily',
 ): DeepPartial<ChartOptions> => ({
   width: 0,
   height,
@@ -65,8 +67,27 @@ export const getChartConfig = (
   },
   timeScale: {
     borderColor: CHART_COLORS.border,
-    timeVisible,
+    timeVisible: false,
     secondsVisible: false,
+    tickMarkFormatter: (time: number) => {
+      const date = new Date(time * 1000);
+      switch (period) {
+        case 'daily':
+          return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        case 'weekly':
+          return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        case 'monthly':
+          return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        case '3months':
+        case '6months':
+          return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        case 'yearly':
+        case 'max':
+          return date.toLocaleDateString([], { month: 'short', year: '2-digit' });
+        default:
+          return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      }
+    },
   },
   handleScroll: true,
   handleScale: true,
@@ -93,15 +114,15 @@ export const getChartConfig = (
 
 export const PERIOD_CONFIG: Record<
   Period,
-  { days: number | string; interval?: 'hourly' | 'daily' }
+  { days: number }
 > = {
-  daily: { days: 1, interval: 'hourly' },
-  weekly: { days: 7, interval: 'hourly' },
-  monthly: { days: 30, interval: 'hourly' },
-  '3months': { days: 90, interval: 'daily' },
-  '6months': { days: 180, interval: 'daily' },
+  daily: { days: 1 },
+  weekly: { days: 7 },
+  monthly: { days: 30 },
+  '3months': { days: 90 },
+  '6months': { days: 180 },
   yearly: { days: 365 },
-  max: { days: 'max' },
+  max: { days: 365 },
 };
 
 export const PERIOD_BUTTONS: { value: Period; label: string }[] = [

@@ -22,10 +22,10 @@ const CoinOverviewError = () => {
 const CoinOverview = async () => {
   try {
     const [coin, coinOHLCData] = await Promise.all([
-      await fetcher<CoinDetailsData>('/coins/bitcoin', {
+      fetcher<CoinDetailsData>('/coins/bitcoin', {
         dex_pair_format: 'symbol',
       }),
-      await fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
+      fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
         vs_currency: 'usd',
         days: 1,
         // interval: 'hourly', ----------------------------- WORKS ONLY ON PAID API
