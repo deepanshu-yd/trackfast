@@ -499,6 +499,16 @@
     }
   }
 
+  #categories-fallback {
+    h4 {
+      @apply text-xl md:text-2xl font-semibold mb-2;
+    }
+
+    table {
+      @apply bg-dark-500 rounded-xl overflow-hidden;
+    }
+  }
+
   #coin-details-page {
     @apply py-12 px-4 sm:px-6 mx-auto max-w-360 size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center;
 
