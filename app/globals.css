@@ -812,7 +812,7 @@
   }
 
   #coin-overview {
-    @apply w-full h-full xl:col-span-2 px-2 bg-dark-500 rounded-xl;
+    @apply w-full h-full xl:col-span-2 px-2 bg-dark-500 rounded-xl overflow-hidden;
 
     .header {
       @apply flex-1 mb-2 flex gap-2 md:gap-3;
