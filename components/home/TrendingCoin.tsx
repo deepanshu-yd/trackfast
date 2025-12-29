@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import DataTable from '../DataTable';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, formatPercentage } from '@/lib/utils';
 
 const TrendingCoinError = () => {
   return (
@@ -64,12 +64,15 @@ const TrendingCoin = async () => {
               isTrendingUp ? 'text-green-500' : 'text-red-500'
             )}
           >
+            <span>
+              {formatPercentage(item.data.price_change_percentage_24h.usd)}
+            </span>
+            
             {isTrendingUp ? (
               <TrendingUp width={16} height={16} />
             ) : (
               <TrendingDown width={16} height={16} />
             )}
-            <span>{Math.abs(percentage).toFixed(2)}%</span>
           </div>
         );
       },
